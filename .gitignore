@@ -1,0 +1,6 @@
+#Session and other vim/neovim related files.
+*.vim
+*.swo
+*.swp
+
+.cache/
