@@ -1,6 +1,16 @@
+#Build files and related stuff.
+build/*
+
 #Session and other vim/neovim related files.
 *.vim
 *.swo
 *.swp
 
+#Cache for LSP
 .cache/
+
+#used by LSP for code completion.
+compile_commands.json
+
+#taga file for ctags.
+tags
