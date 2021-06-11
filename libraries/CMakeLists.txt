@@ -6,5 +6,6 @@ add_subdirectory(DeclutteredLogger)
 add_subdirectory(DeclutteredConfigReader)
 add_subdirectory(DeclutteredMD5Hasher)
 add_subdirectory(DeclutteredUniqueIntChecker)
+add_subdirectory(DeclutteredExceptionProcessor)
 add_subdirectory(AssortedUtilities)
 
