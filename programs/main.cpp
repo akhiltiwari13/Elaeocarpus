@@ -4,6 +4,7 @@
 
 #include <string>
 #include <bitset>
+#include <shmstream.h>
 
 /* using namespace com::elaeocarpus::assortedUtils; */
 
