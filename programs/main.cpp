@@ -1,12 +1,12 @@
-#include <ConfigReader.h>
-#include <log.h>
+/* #include <ConfigReader.h> */
+/* #include <log.h> */
 /* #include <memLayoutOrder.h> */
 
 #include <string>
 #include <bitset>
-#include <shmstream.h>
+#include <iostream>
+#include <MemLayoutOrder.h>
 
-/* using namespace com::elaeocarpus::assortedUtils; */
 
 class X {
     public:
@@ -47,12 +47,12 @@ int main(int argc, char **argv) {
     /* Logger::getLogger().setDump(std::string("./.SampleLog"), false); */
     /* LOG_INFO("Sample Test Logging, successful!"); */
 
-    /* X x; */
+    X x;
 
-    /* std::cout << access_order(&X::dataMem2, &X::dataMem1); */
+    std::cout << elaeocarpus::elaeoutils::access_order(&x.dataMem1, &x.dataMem2);
 
-    std::cout<<"std::make_pair(34,56.0f):"<<std::make_pair(34,56.0f)<<std::endl;
-    varPrint(std::cout,"akhil", 23.6f, std::bitset<16>(325), "hello world!");
+    /* std::cout<<"std::make_pair(34,56.0f):"<<std::make_pair(34,56.0f)<<std::endl; */
+    /* varPrint(std::cout,"akhil", 23.6f, std::bitset<16>(325), "hello world!"); */
 
     return 0;
 }
