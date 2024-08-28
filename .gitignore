@@ -14,3 +14,9 @@ compile_commands.json
 
 #taga file for ctags.
 tags
+
+# scripts
+*/__pycache__/**
+*.log
+*.patch
+*/venv/*
