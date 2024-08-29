@@ -34,7 +34,14 @@ pip install codectx
    cd source-context
    ```
 
-2. Install the package:
+2. Run:
+
+   ```bash
+   chmod u+x ./run.py
+   ./run.py
+   ```
+
+3. Install the package:
    ```bash
    pip install -e .
    ```
@@ -131,21 +138,3 @@ If you have any questions, feel free to reach out to [Your Name] at [your.email@
 
 - Thanks to all contributors who have helped to improve this tool.
 - Inspired by the need to provide comprehensive code context to LLMs.
-
-```
-
-This README provides:
-
-1. An overview of the tool
-2. Installation instructions
-3. Usage guide with examples
-4. Configuration details
-5. Output format explanation
-6. Development guidelines
-7. Troubleshooting tips
-8. License information
-9. Contact details
-10. Acknowledgments
-
-You can further customize this README to include any specific details about your implementation or additional features you might add in the future.
-```
