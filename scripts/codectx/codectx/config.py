@@ -25,6 +25,19 @@ IGNORED_PATTERNS: List[str] = [
     # specific to Arthur
     "third_party/",
     "Resources/",
+    "LICENSE",
+    ".gitmodules",
+    "README.md",
+    ".clang-format",
+    ".cmake-format.yaml",
+    "cmake/StaticAnalyzers.cmake",
+    "cmake/PreventInSourceBuilds.cmake",
+    "cmake/Cache.cmake",
+    "cmake/Conan.cmake",
+    "cmake/Sanitizers.cmake",
+    "cmake/StandardProjectSettings.cmake",
+    "cmake/Doxygen.cmake",
+    "cmake/CompilerWarnings.cmake",
 ]
 
 
