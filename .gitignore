@@ -16,7 +16,12 @@ compile_commands.json
 tags
 
 # scripts
-*/__pycache__/**
+**/__pycache__/**
 *.log
 *.patch
-*/venv/*
+**/venv/*
+**/*.egg-info/*
+
+
+# mac specific files
+.DS_Store
