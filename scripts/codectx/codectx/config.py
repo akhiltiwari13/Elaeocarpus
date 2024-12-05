@@ -11,6 +11,7 @@ IGNORED_PATTERNS: List[str] = [
     ".gitignore",
     ".git/",
     ".cache/",
+    ".ccls/",
     "build/",
     ".vscode/",
     ".session/",
@@ -19,6 +20,7 @@ IGNORED_PATTERNS: List[str] = [
     "*.log",
     "*.tmp",
     "venv/",
+    "compile_commands.json",
     # bazel project related exclusions
     "bazel-*/",
     "external/",
