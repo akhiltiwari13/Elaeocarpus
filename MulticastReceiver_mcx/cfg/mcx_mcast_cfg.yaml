@@ -1,0 +1,20 @@
+# MCX Market Data Connection Parameters
+connection:
+  multicast_group: "239.255.70.26"
+  port: 19288
+  interface_ip: "192.168.113.16"
+  blocking: false
+  stream_id: 1
+
+# Logging Configuration  
+logging:
+  log_level: "debug"
+  log_file: "./logs/market_data.log" 
+  max_size: 5000000 
+  max_files: 10
+  console_output: true
+
+# Recovery Settings
+recovery:
+  gap_fill_attempts: 3
+  retry_interval_ms: 1000
