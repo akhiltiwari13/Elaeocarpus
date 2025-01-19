@@ -12,7 +12,8 @@ from datetime import datetime
 from typing import List
 
 from .config import IGNORED_PATTERNS
-from .file_utils import get_file_tree
+from .config import CONSIDERED_PATTERNS
+from .file_utils import get_file_tree, get_file_tree_for_listed_files
 from .output_writer import write_output
 
 logging.basicConfig(level=logging.DEBUG)
@@ -82,6 +83,7 @@ def main():
 
     logger.debug("Processing directory: %s", src_path)
     file_tree = get_file_tree(src_path, IGNORED_PATTERNS)
+    # file_tree = get_file_tree_for_listed_files(src_path, CONSIDERED_PATTERNS)
     logger.info("Found %d files", len(file_tree))
 
     logger.info("Writing output to: %s", output_file)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.20)
 
 project(elaeocarpus VERSION 0.1 LANGUAGES CXX)
 
@@ -10,10 +10,13 @@ else(UNIX)
     message(status "Building on an unsupported/untested platform.")
 endif(UNIX)
 
+# Use Conan's generated files if they exist
+# include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+# conan_basic_setup()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 
 add_subdirectory(libraries)
-add_subdirectory(programs)
+# add_subdirectory(programs)

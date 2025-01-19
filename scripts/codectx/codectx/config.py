@@ -40,6 +40,13 @@ IGNORED_PATTERNS: List[str] = [
     "cmake/StandardProjectSettings.cmake",
     "cmake/Doxygen.cmake",
     "cmake/CompilerWarnings.cmake",
+    # specific to platform
+    "3rdparty",
+]
+
+# added for testing. just want the cmake layout
+CONSIDERED_PATTERNS: List[str] = [
+    "CMakeLists.txt",
 ]
 
 

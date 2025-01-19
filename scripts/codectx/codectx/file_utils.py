@@ -52,6 +52,46 @@ def should_ignore(path: str, ignored_patterns: List[str], root_dir: str) -> bool
     return False
 
 
+def should_consider(path: str, considered_patterns: List[str], root_dir: str) -> bool:
+    """
+    Determine if a file or directory should be considered based on the considered patterns.
+
+    Args:
+        path (str): The full path of the file or directory to check.
+        considered_patterns (List[str]): List of patterns to include/consider.
+        root_dir (str): The root directory of the project.
+
+    Returns:
+        bool: True if the path should be accepted, False otherwise.
+    """
+    rel_path = os.path.relpath(path, root_dir)
+    path_parts = rel_path.split(os.sep)
+
+    for pattern in considered_patterns:
+        if pattern.endswith("/"):
+            for i in range(len(path_parts)):
+                check_path = os.path.join(*path_parts[: i + 2]) + "/"
+                if fnmatch.fnmatch(check_path, pattern):
+                    logger.debug(
+                        "Accepting directory: %s (matched pattern: %s)",
+                        rel_path,
+                        pattern,
+                    )
+                    return True
+
+        else:
+            if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(
+                os.path.basename(path), pattern
+            ):
+                logger.debug(
+                    "Considering file: %s (matched pattern: %s)", rel_path, pattern
+                )
+                return True
+
+    logger.debug("Ignoring file: %s", rel_path)
+    return False
+
+
 def get_file_tree(root_dir: str, ignored_patterns: List[str]) -> List[str]:
     """
     Generate a list of files in the directory tree, excluding ignored files and directories.
@@ -68,13 +108,45 @@ def get_file_tree(root_dir: str, ignored_patterns: List[str]) -> List[str]:
         dirs[:] = [
             d
             for d in dirs
-            if not should_ignore(os.path.join(root, d), ignored_patterns, root_dir)
+            # if not should_ignore(os.path.join(root, d), ignored_patterns, root_dir)
         ]
         logger.debug("Directories after filtering: %s", dirs)
 
         for file in files:
             file_path = os.path.join(root, file)
             if not should_ignore(file_path, ignored_patterns, root_dir):
+                rel_path = os.path.relpath(file_path, root_dir)
+                file_tree.append(rel_path)
+                logger.debug("Added file to tree: %s", rel_path)
+
+    return file_tree
+
+
+def get_file_tree_for_listed_files(
+    root_dir: str, considered_patterns: List[str]
+) -> List[str]:
+    """
+    Generate a list of files in the directory tree, including only the specified files and directories.
+
+    Args:
+        root_dir (str): The root directory to start the file tree from.
+        considered_patterns (List[str]): List of patterns to include.
+
+    Returns:
+        List[str]: A list of relative file paths.
+    """
+    file_tree = []
+    for root, dirs, files in os.walk(root_dir):
+        dirs[:] = [
+            d
+            for d in dirs
+            # if should_consider(os.path.join(root, d), considered_patterns, root_dir)
+        ]
+        logger.debug("Directories after filtering: %s", dirs)
+
+        for file in files:
+            file_path = os.path.join(root, file)
+            if should_consider(file_path, considered_patterns, root_dir):
                 rel_path = os.path.relpath(file_path, root_dir)
                 file_tree.append(rel_path)
                 logger.debug("Added file to tree: %s", rel_path)
