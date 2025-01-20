@@ -8,6 +8,7 @@ build/*
 
 #Cache for LSP
 .cache/
+.ccls-cache/
 
 #used by LSP for code completion.
 compile_commands.json
@@ -16,11 +17,11 @@ compile_commands.json
 tags
 
 # scripts
-**/__pycache__/**
+__pycache__/
 *.log
 *.patch
-**/venv/*
-**/*.egg-info/*
+venv/*
+*/*.egg-info/*
 
 
 # mac specific files

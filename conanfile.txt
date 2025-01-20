@@ -1,10 +1,47 @@
 [requires]
-fmt/10.0.0
-spdlog/1.11.0
-# other dependencies
+# Core C++ libraries
+capnproto/1.0.0  # For serialization
+# cppfix/1.0.0     # For fixing common C++ issues (hypothetical library)
+asio/1.28.0      # For TCP and multicast connections (network I/O)
+libevent/2.1.12  # For event-driven architecture
+# folly/2023.10.09.00  # For fast in-memory queues and other utilities
+spdlog/1.11.0    # For binary and text logging
+fmt/10.0.0        # For string formatting (used by spdlog)
+cpptoml/0.1.1    # For config file parsing (TOML format)
+gtest/1.13.0     # For unit testing (optional, but recommended)
 
 [generators]
 CMakeDeps
 CMakeToolchain
+
 [options]
-# Any custom build options
+# Enable compiler optimizations and warnings
+*:shared=False
+*:fPIC=True
+# *:build_type=Release
+*:build_type=Debug
+*:compiler.cppstd=20
+*:compiler.libcxx=libstdc++11
+
+# Enable all warnings and treat them as errors
+*:compiler.warning_level=everything
+*:compiler.treat_warnings_as_errors=True
+
+# Enable strict style checks (if supported by the compiler)
+*:compiler.style_checks=strict
+
+# Enable link-time optimization (LTO) for better performance
+*:compiler.lto=True
+
+# Enable debug symbols even in release mode for better debugging
+*:compiler.debug=True
+
+[imports]
+# Copy necessary shared libraries to the build directory
+bin, *.dll -> ./bin
+lib, *.so* -> ./lib
+lib, *.dylib* -> ./lib
+
+# [build_requires]
+# cmake/3.26.0  # Ensure a modern CMake version is used
+# cmake/3.22.0  # Ensure a modern CMake version is used

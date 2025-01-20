@@ -1,0 +1,3 @@
+# Editable install with no version control (codectx==0.7)
+-e /Users/akhil/files/projects/myscripts/codectx
+setuptools==72.1.0
