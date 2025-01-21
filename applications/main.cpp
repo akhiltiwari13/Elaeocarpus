@@ -5,7 +5,7 @@
 #include <string>
 #include <bitset>
 #include <iostream>
-#include <MemLayoutOrder.h>
+// #include <MemLayoutOrder.h>
 
 
 class X {
@@ -41,15 +41,12 @@ std::ostream& operator << (std::ostream& strm,
 
 /* Sample program which demostrate how to use most of the libraries in this
  * project. */
-int main(int argc, char **argv) {
+int main() {
     /* @todo: read required data from a config file. */
     std::string config("Config.ini");
     /* Logger::getLogger().setDump(std::string("./.SampleLog"), false); */
     /* LOG_INFO("Sample Test Logging, successful!"); */
 
-    X x;
-
-    std::cout << elaeocarpus::elaeoutils::access_order(&x.dataMem1, &x.dataMem2);
 
     /* std::cout<<"std::make_pair(34,56.0f):"<<std::make_pair(34,56.0f)<<std::endl; */
     /* varPrint(std::cout,"akhil", 23.6f, std::bitset<16>(325), "hello world!"); */

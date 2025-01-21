@@ -21,6 +21,6 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 
 add_subdirectory(libraries)
-# add_subdirectory(programs)
+add_subdirectory(applications)
 # add_subdirectory(tests)
 # add_subdirectory(scripts)

@@ -17,12 +17,12 @@ namespace elaeo::comm::events{
 template <typename Event>
 concept EventType = std::is_trivially_copyable<Event>() && std::is_move_assignable<Event>();
 
-typename <EventType Event>
-class EventCallback{
-public:
-  virtual void handleEvents(const Event& event) noexcept = 0;
-  virtual ~EventCallback()  noexcept = default;
-}
+// typename <EventType Event>
+// class EventCallback{
+// public:
+//   virtual void handleEvents(const Event& event) noexcept = 0;
+//   virtual ~EventCallback()  noexcept = default;
+// }
 
 }
 #endif //ELAEO_COMM_EVENTS_CALLBACK_H
