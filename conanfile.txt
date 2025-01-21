@@ -1,18 +1,22 @@
 [requires]
 # Core C++ libraries
 capnproto/1.0.0  # For serialization
-# cppfix/1.0.0     # For fixing common C++ issues (hypothetical library)
+quickfix/1.15.1     # For fixing common C++ issues (hypothetical library)
 asio/1.28.0      # For TCP and multicast connections (network I/O)
 libevent/2.1.12  # For event-driven architecture
-# folly/2023.10.09.00  # For fast in-memory queues and other utilities
-spdlog/1.11.0    # For binary and text logging
-fmt/10.0.0        # For string formatting (used by spdlog)
+fmt/10.2.1        # For string formatting (used by spdlog)
+spdlog/1.14.0    # For binary and text logging
+folly/2024.08.12.00  # For fast in-memory queues and other utilities
 cpptoml/0.1.1    # For config file parsing (TOML format)
+yaml-cpp/0.8.0
 gtest/1.13.0     # For unit testing (optional, but recommended)
 
 [generators]
 CMakeDeps
 CMakeToolchain
+
+[layout]
+cmake_layout
 
 [options]
 # Enable compiler optimizations and warnings
