@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+# cmake_minimum_required(VERSION 3.10)
 
 # set(INCLUDE_DIRS
 #     # ${CMAKE_SOURCE_DIR}/libraries/DeclutteredLogger
@@ -17,4 +17,5 @@ cmake_minimum_required(VERSION 3.10)
 # target_link_libraries(shm_demo PRIVATE shmstream)
 # target_include_directories(shm_demo PRIVATE ${INCLUDE_DIRS})
 #
- add_subdirectory(nse_tbt_recovery_standalone)
+add_subdirectory(nse_tbt_recovery_standalone)
+add_subdirectory(asiotbtrecov)

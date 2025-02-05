@@ -1,11 +1,20 @@
-***has some random projects***
+# Elaeocarpus
+<sup> Trading Platform Implementation
 
-## some library implementation to be used in other meaningful projects
->
+## Architecture.
+Elaeocarpus is an event driven system that has various modules interacting via an event bus.
+
+### diagram @TODO
+
+### building Elaeocarpus and the sdk
+- uses conan and cmake to configure/build the process.
+
+
+### use of conan
 > Explanation of conan.txt
+> This conanfile.txt provides a solid foundation for a modern C++20 project with all the requested features. It includes libraries for serialization, networking, event-driven architecture, logging, configuration parsing, and more. The compiler flags ensure that your code is optimized, clean, and free of warnings.
 
 1. [requires]
-
 This section lists all the libraries your project depends on. Here’s a breakdown of each library:
 
     capnproto: A high-performance serialization library. It’s great for serializing data structures efficiently.
@@ -81,6 +90,3 @@ Compiler Flags and Optimizations
 
 Conclusion
 
-This conanfile.txt provides a solid foundation for a modern C++20 project with all the requested features. It includes libraries for serialization, networking, event-driven architecture, logging, configuration parsing, and more. The compiler flags ensure that your code is optimized, clean, and free of warnings.
-
-You can further customize this configuration based on your specific project requirements.

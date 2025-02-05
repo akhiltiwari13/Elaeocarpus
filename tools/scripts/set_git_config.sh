@@ -1,7 +1,7 @@
 #!/bin/bash
 
-git config --global user.name "akhil"
-git config --global user.email "akhiltiwari.13@gmail.com"
+git config --global user.name "akhiltiwari13"
+git config --global user.email "akhil_blr@algoquantfin.com"
 git config --global core.editor "nvim"
 git config --global filter.lfs.clean "git-lfs clean -- %f"
 git config --global filter.lfs.smudge "git-lfs smudge -- %f"

@@ -10,11 +10,11 @@ struct StreamHeader {
     uint16_t msg_len;
     uint16_t stream_id;
     uint32_t seq_no;
-    uint8_t message_type;
 };
 
 struct OrderMessage {
     StreamHeader header;
+    uint8_t message_type;
     uint64_t timestamp;
     double order_id;
     uint32_t token;
@@ -25,6 +25,7 @@ struct OrderMessage {
 
 struct TradeMessage {
     StreamHeader header;
+    uint8_t message_type;
     uint64_t timestamp;
     double buy_order_id;
     double sell_order_id;
@@ -35,6 +36,7 @@ struct TradeMessage {
 
 struct PacketLossPacket {
     StreamHeader header;
+    uint8_t message_type;
     uint8_t reserved;
     uint32_t to_seq;
     uint32_t from_seq;
@@ -53,7 +55,8 @@ enum class MessageType : uint8_t {
     SpreadModifyOrder = 'H',
     SpreadCancelOrder = 'J',
     SpreadTrade = 'K',
-    PacketLoss = 'L'
+    PacketLoss = 'L',
+    Recovery = 'Y'
 };
 
 } // namespace recovery

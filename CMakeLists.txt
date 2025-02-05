@@ -15,10 +15,10 @@ endif(UNIX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXTENSIONS OFF)
-
-  
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
+# conan2.x setup
+# include(${CMAKE_BINARY_DIR}/build/build/Release/generators/conan_toolchain.cmake)
 
 add_subdirectory(libraries)
 add_subdirectory(applications)

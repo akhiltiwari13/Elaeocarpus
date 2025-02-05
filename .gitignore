@@ -9,11 +9,12 @@ build/*
 #Cache for LSP
 .cache/
 .ccls-cache/
+.ccls/
 
 #used by LSP for code completion.
 compile_commands.json
 
-#taga file for ctags.
+#tag file for ctags.
 tags
 
 # scripts

@@ -46,8 +46,8 @@ struct RecoveryRequestPacket {
 
 struct RecoveryResponse{
   StreamHeader header;
-  // char msg_type;
-  char req_status;
+  uint8_t message_type;
+  uint8_t req_status;
 };
 
 #pragma pack(pop)
@@ -80,56 +80,6 @@ inline double ntohd(double be_double)
     return conv.d;            // read back as host double
 }
 
-// fixing endianness in-place.
-inline void fixEndianness(StreamHeader& hdr)
-{
-    hdr.msg_len    = ntohs(hdr.msg_len);
-    hdr.stream_id  = ntohs(hdr.stream_id);
-    hdr.seq_no     = ntohl(hdr.seq_no);
-    // hdr.message_type = no swap needed (it's 1 byte)
-}
-
-inline void fixEndianness(OrderMessage& msg)
-{
-    fixEndianness(msg.header);
-    // 8-byte fields
-    uint64_t t = ntohll(msg.timestamp);
-    msg.timestamp = t;
-
-    double od = ntohd(msg.order_id);
-    msg.order_id = od;
-
-    // 4-byte fields
-    msg.token    = ntohl(msg.token);
-    // 1-byte order_type => no swap
-
-    // price is int32_t => reinterpret to uint32_t for swap
-    msg.price = static_cast<int32_t>(ntohl(static_cast<uint32_t>(msg.price)));
-
-    msg.quantity = ntohl(msg.quantity);
-}
-
-inline void fixEndianness(TradeMessage& msg)
-{
-    fixEndianness(msg.header);
-
-    msg.timestamp    = ntohll(msg.timestamp);
-    msg.buy_order_id = ntohd(msg.buy_order_id);
-    msg.sell_order_id= ntohd(msg.sell_order_id);
-
-    msg.token        = ntohl(msg.token);
-    msg.trade_price  = ntohl(msg.trade_price);
-    msg.trade_quantity = ntohl(msg.trade_quantity);
-}
-
-inline void fixEndianness(PacketLossPacket& msg)
-{
-    fixEndianness(msg.header);
-    // reserved is a single byte, no swap
-    msg.to_seq   = ntohl(msg.to_seq);
-    msg.from_seq = ntohl(msg.from_seq);
-}
-
 class TbtRecoveryClient {
 public:
   explicit TbtRecoveryClient(const std::string& config_file);
@@ -149,7 +99,7 @@ private:
   bool loadConfig(const std::string& config_file);
   bool connectToServer(const std::string& ip, uint16_t port);
   bool sendRequest(const RecoveryRequestPacket& request);
-  bool processResponses();
+  bool processRecovery();
   void processTbtMessage( const StreamHeader& tbtHeader, const uint8_t* payload, size_t length);
 
   // Configuration

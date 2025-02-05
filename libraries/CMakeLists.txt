@@ -9,5 +9,7 @@ cmake_minimum_required(VERSION 3.6)
 # add_subdirectory(DeclutteredExceptionProcessor)
 # add_subdirectory(DeclutteredSHMContainer)
 # add_subdirectory(elaeoutils)
+add_subdirectory(utility)
+add_subdirectory(foundation)
 add_subdirectory(communication)
 

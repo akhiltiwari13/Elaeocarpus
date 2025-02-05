@@ -19,26 +19,6 @@ class X {
 /* friend char * access_order(data_type1 class_type::*mem1, data_type2
  * class_type::*mem2); */
 
-// generic output operator for pairs (limited solution)
-    template <typename T1, typename T2>
-std::ostream& operator << (std::ostream& strm,
-        const std::pair<T1,T2>& p)
-{
-    return strm << "[" << p.first << "," << p.second << "]";
-}
-
-// variadic function template to write data to ostream.
-    template <typename T>
-    void varPrint(std::ostream& ostrm, const T& arg){
-        ostrm<< arg<<std::endl;
-    }
-
-    template <typename T, typename... types>
-    void varPrint(std::ostream& ostrm, const T& fArg, const types&... args){
-        ostrm<< fArg<<std::endl;
-        varPrint(ostrm,args...);
-    }
-
 /* Sample program which demostrate how to use most of the libraries in this
  * project. */
 int main() {

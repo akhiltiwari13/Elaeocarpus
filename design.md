@@ -13,7 +13,7 @@
 - Message format
 -
 - Exchange execution report enrichment
-- Throttling of outbount messages
+- Throttling of outbound messages  -> to be controlled via a throttler.
 - Guard rails -> 
 - Resiliency -> state persistance & recovery
 - Analytics ? (needs elaboration)

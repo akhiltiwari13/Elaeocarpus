@@ -1,0 +1,24 @@
+# TBT Recovery Configuration
+log:
+  level: DEBUG # DEBUG, INFO, WARN, ERROR
+  file: "./tbt_recovery.log"
+
+# Recovery server configurations per segment
+servers:
+  CM:
+    ip: "172.28.124.34"
+    port: 10984
+  FO:
+    ip: "172.28.124.30"
+    port: 10990
+  CD:
+    ip: "172.28.124.32"
+    port: 10970
+  CO:
+    ip: "172.19.125.84"
+    port: 10960
+
+recovery:
+  timeout_ms: 5000 # TCP timeout in milliseconds
+  max_retries: 3 # Number of retry attempts
+  buffer_size: 65536 # Read buffer size in bytes

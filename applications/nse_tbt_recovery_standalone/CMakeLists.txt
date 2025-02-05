@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
-project(tbt_recovery)
-
 option(BUILD_STATIC_LIBS ON)
+# Use static linking for stdlib
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/includes/)
+
 # Find required packages
 find_package(yaml-cpp REQUIRED)
 find_package(spdlog REQUIRED)
@@ -16,7 +16,7 @@ add_library(tbt_recovery_lib STATIC
 
 target_include_directories(tbt_recovery_lib
   PUBLIC 
-    ${PROJECT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
   PRIVATE
     ${YAML_CPP_INCLUDE_DIR}
     ${SPDLOG_INCLUDE_DIR}
@@ -60,30 +60,5 @@ install(FILES
   DESTINATION etc/tbt_recovery
 )
 
-# Testing setup if needed enable_testing()
-# add_subdirectory(tests)
-
-# file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/cfg)
-# file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/logs)
-#
-# add_custom_command(
-#     TARGET mcx_receiver POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy
-#         ${CMAKE_SOURCE_DIR}/cfg/mcx_mcast_cfg.yaml
-#         ${CMAKE_BINARY_DIR}/cfg/mcx_mcast_cfg.yaml
-#     COMMENT "Copying configuration file to build directory"
-# )
-#
-# add_custom_command(
-#     TARGET mcx_receiver POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy
-#         ${CMAKE_SOURCE_DIR}/setup.sh
-#         ${CMAKE_BINARY_DIR}/setup.sh
-#     COMMAND chmod +x ${CMAKE_BINARY_DIR}/setup.sh
-#     COMMENT "Copying and making setup script executable"
-# )
-#
-# install(TARGETS mcx_receiver RUNTIME DESTINATION bin)
-# install(FILES cfg/mcx_mcast_cfg.yaml DESTINATION etc/mcx)
-#
-# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Force static linking for all executables
+set_target_properties(tbt_recovery PROPERTIES LINK_FLAGS "-static-libgcc -static-libstdc++ -static")
