@@ -45,6 +45,13 @@ int main(int argc, char* argv[]) {
       return 1;
     }
     std::cout << "Recovery client initialized..." << std::endl;
+    
+    // Keep io_context running
+    asio::executor_work_guard<asio::io_context::executor_type> work = asio::make_work_guard(ioc);
+    
+    // Run in separate thread to prevent blocking
+    std::thread ioc_thread([&ioc]() { ioc.run(); });
+    
     // Set Callback to print recovered packets. @TODO find where is this callback called?
     client->setCallback([](uint32_t seq_num, const std::vector<uint8_t>& data) {
       std::cout << "Recovered packet: seq=" << seq_num << " size=" << data.size() << std::endl;
@@ -67,9 +74,10 @@ int main(int argc, char* argv[]) {
     // asio::post(ioc, [&ioc]() { ioc.stop(); });
 
     // async run for the recovery
-    ioc.run();
+    // ioc.run();
     // spdlog::shutdown();
-
+    work.reset();
+    ioc_thread.join();
     return 0;
   }
   catch (const std::exception& e) {

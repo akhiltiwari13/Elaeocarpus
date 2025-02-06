@@ -103,6 +103,8 @@ bool TbtRecoveryClient::initialize() {
     // Ensure the logger is only created once
     if (!spdlog::get("tbt_logger")) {
       m_logger = spdlog::daily_logger_mt("tbt_logger", log_file);
+      m_logger->flush_on(spdlog::level::debug);
+      m_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
     } else {
       m_logger = spdlog::get("tbt_logger");
     }
@@ -110,6 +112,7 @@ bool TbtRecoveryClient::initialize() {
     m_logger->set_level(spdlog::level::from_str(log_level));
     m_logger->flush_on(spdlog::level::debug);
     m_logger->info("Logger initialized successfully.");
+    m_logger->flush();
     
     // Log raw YAML for verification
     std::stringstream ss;
