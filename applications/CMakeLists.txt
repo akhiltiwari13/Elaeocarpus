@@ -19,3 +19,4 @@
 #
 add_subdirectory(nse_tbt_recovery_standalone)
 add_subdirectory(asiotbtrecov)
+add_subdirectory(simplerecov)

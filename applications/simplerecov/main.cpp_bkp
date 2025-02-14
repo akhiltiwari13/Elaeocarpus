@@ -1,0 +1,365 @@
+#include "tbt_packet_structure.h"
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <iostream>
+#include <memory>
+#include <netinet/in.h>
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/spdlog.h>
+#include <string>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <vector>
+
+namespace recovery {
+
+class TbtRecoveryClient {
+public:
+  struct RecoveryResult {
+    bool success;
+    uint32_t packets_recovered;
+    std::string error_message;
+  };
+
+  struct RecoveryRequest {
+    uint16_t stream_id;
+    uint32_t start_seq;
+    uint32_t end_seq;
+  };
+
+  explicit TbtRecoveryClient() {
+    // Hardcoded configuration for FO segment
+    m_config = {
+        "172.28.124.30", // IP address
+        10990,           // Port
+        5000,            // Timeout in ms
+        3,               // Max retries
+        65536            // Buffer size
+    };
+  }
+
+  ~TbtRecoveryClient() {
+    if (m_socket >= 0) {
+      close(m_socket);
+    }
+  }
+
+  bool initialize() {
+    try {
+      // Initialize logger
+      m_logger = spdlog::daily_logger_mt("tbt_logger", "tbt_recovery.log");
+      m_logger->set_level(spdlog::level::debug);
+      m_logger->flush_on(spdlog::level::trace);
+      m_logger->info("TBT Recovery Client initialized");
+      return true;
+    } catch (const std::exception &e) {
+      std::cerr << "Failed to initialize: " << e.what() << std::endl;
+      return false;
+    }
+  }
+
+  RecoveryResult performRecovery(const RecoveryRequest &request) {
+    RecoveryResult result{false, 0, ""};
+
+    if (!connectToServer()) {
+      result.error_message = "Failed to connect to recovery server";
+      return result;
+    }
+
+    if (!sendRequest(request)) {
+      result.error_message = "Failed to send recovery request";
+      return result;
+    }
+
+    // Wait for recovery response ('Y')
+    StreamHeader hdr;
+    std::vector<uint8_t> payload;
+
+    if (!readNextPacket(hdr, payload)) {
+      result.error_message = "Failed to read recovery response";
+      return result;
+    }
+
+    if (payload[0] != 'Y') {
+      result.error_message = "Invalid recovery response";
+      return result;
+    }
+
+    m_logger->info("Recovery request accepted, processing packets...");
+
+    // Process TBT packets
+    result.success = true;
+    while (true) {
+      if (!readNextPacket(hdr, payload)) {
+        if (result.packets_recovered == 0) {
+          result.success = false;
+          result.error_message = "Failed to read any packets";
+        }
+        break;
+      }
+
+      processTbtMessage(hdr, payload);
+      result.packets_recovered++;
+
+      if (hdr.seq_no >= request.end_seq) {
+        break;
+      }
+    }
+
+    return result;
+  }
+
+private:
+  bool connectToServer() {
+    m_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (m_socket < 0) {
+      m_logger->error("Socket creation failed: {}", strerror(errno));
+      return false;
+    }
+
+    // Set socket to non-blocking mode
+    int flags = fcntl(m_socket, F_GETFL, 0);
+    if (flags < 0) {
+      m_logger->error("Failed to get socket flags: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    if (fcntl(m_socket, F_SETFL, flags | O_NONBLOCK) < 0) {
+      m_logger->error("Failed to set non-blocking mode: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    struct sockaddr_in server_addr{};
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(m_config.server_port);
+
+    if (inet_pton(AF_INET, m_config.server_ip.c_str(), &server_addr.sin_addr) <=
+        0) {
+      m_logger->error("Invalid address: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    m_logger->info("Attempting to connect to {}:{}", m_config.server_ip,
+                   m_config.server_port);
+
+    // Initiate non-blocking connect
+    int result =
+        connect(m_socket, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    if (result < 0) {
+      if (errno != EINPROGRESS) {
+        m_logger->error("Connection failed immediately: {}", strerror(errno));
+        close(m_socket);
+        return false;
+      }
+
+      // Wait for connection with timeout
+      fd_set write_fds;
+      FD_ZERO(&write_fds);
+      FD_SET(m_socket, &write_fds);
+
+      struct timeval tv{};
+      tv.tv_sec = m_config.timeout_ms / 1000;
+      tv.tv_usec = (m_config.timeout_ms % 1000) * 1000;
+
+      result = select(m_socket + 1, nullptr, &write_fds, nullptr, &tv);
+      if (result <= 0) {
+        m_logger->error("Connection timed out after {} ms",
+                        m_config.timeout_ms);
+        close(m_socket);
+        return false;
+      }
+
+      // Verify connection status
+      int error = 0;
+      socklen_t len = sizeof(error);
+      if (getsockopt(m_socket, SOL_SOCKET, SO_ERROR, &error, &len) < 0 ||
+          error != 0) {
+        m_logger->error("Connection failed during wait: {}",
+                        error ? strerror(error) : strerror(errno));
+        close(m_socket);
+        return false;
+      }
+    }
+
+    // Return to blocking mode for normal operation
+    if (fcntl(m_socket, F_SETFL, flags) < 0) {
+      m_logger->error("Failed to restore blocking mode: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    // Set TCP keep-alive
+    int keepalive = 1;
+    if (setsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, &keepalive,
+                   sizeof(keepalive)) < 0) {
+      m_logger->error("Failed to set keepalive: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    // Set receive/send timeouts for subsequent operations
+    struct timeval tv{};
+    tv.tv_sec = m_config.timeout_ms / 1000;
+    tv.tv_usec = (m_config.timeout_ms % 1000) * 1000;
+
+    if (setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0 ||
+        setsockopt(m_socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) < 0) {
+      m_logger->error("Failed to set socket timeouts: {}", strerror(errno));
+      close(m_socket);
+      return false;
+    }
+
+    m_logger->info("Successfully connected to {}:{}", m_config.server_ip,
+                   m_config.server_port);
+    return true;
+  }
+
+  // bool sendRequest(const RecoveryRequestPacket &request) {
+  //   return send(m_socket, &request, sizeof(request), 0) == sizeof(request);
+  // }
+
+  bool sendRequest(const RecoveryRequest &request) {
+    RecoveryRequestPacket packet;
+    packet.msg_type = 'R';
+    packet.stream_id = request.stream_id;
+    packet.start_seq = request.start_seq;
+    packet.end_seq = request.end_seq;
+
+    m_logger->debug("Sending recovery request - Stream: {}, Start: {}, End: {}",
+                    packet.stream_id, packet.start_seq, packet.end_seq);
+
+    return send(m_socket, &packet, sizeof(packet), 0) == sizeof(packet);
+  }
+
+  bool readExact(void *buffer, size_t size) {
+    size_t total_read = 0;
+    while (total_read < size) {
+      ssize_t bytes_read =
+          recv(m_socket, static_cast<uint8_t *>(buffer) + total_read,
+               size - total_read, 0);
+      if (bytes_read <= 0) {
+        return false;
+      }
+      total_read += bytes_read;
+    }
+    return true;
+  }
+
+  // Modified readNextPacket implementation to properly handle response
+  bool readNextPacket(StreamHeader &hdr, std::vector<uint8_t> &payload) {
+    // Read the header first
+    if (!readExact(&hdr, sizeof(StreamHeader))) {
+      m_logger->error("Failed to read packet header");
+      return false;
+    }
+
+    m_logger->debug("Received header - Length: {}, Stream: {}, Seq: {}",
+                    hdr.msg_len, hdr.stream_id, hdr.seq_no);
+
+    // Verify message length is reasonable
+    if (hdr.msg_len < 1 || hdr.msg_len > m_config.buffer_size) {
+      m_logger->error("Invalid message length: {}", hdr.msg_len);
+      return false;
+    }
+
+    // Read the payload
+    payload.resize(hdr.msg_len);
+    if (!readExact(payload.data(), hdr.msg_len)) {
+      m_logger->error("Failed to read packet payload of length {}",
+                      hdr.msg_len);
+      return false;
+    }
+
+    // Log first few bytes of payload for debugging
+    if (!payload.empty()) {
+      m_logger->debug("First 4 bytes of payload: {:02x} {:02x} {:02x} {:02x}",
+                      payload[0], payload.size() > 1 ? payload[1] : 0,
+                      payload.size() > 2 ? payload[2] : 0,
+                      payload.size() > 3 ? payload[3] : 0);
+    }
+    // For recovery response packet
+    if (payload[0] == 'Y') {
+      if (hdr.msg_len == sizeof(RecoveryResponse) - sizeof(StreamHeader)) {
+        auto *response = reinterpret_cast<const RecoveryResponse *>(payload.data());
+        m_logger->info("Received recovery response - Status: {}", static_cast<int>(response->request_status));
+      }
+    }
+
+    m_logger->debug("Received packet type: {}", payload[0]);
+    return true;
+  }
+
+  // Modified processMessage implementation
+  void processTbtMessage(const StreamHeader &header,
+                         const std::vector<uint8_t> &payload) {
+    if (payload.empty()) {
+      m_logger->error("Empty payload received");
+      return;
+    }
+
+    char msgType = static_cast<char>(payload[0]);
+    m_logger->debug("Processing message type: {}", msgType);
+
+    switch (msgType) {
+    case 'Y': {
+      if (payload.size() >= sizeof(RecoveryResponse) - sizeof(StreamHeader)) {
+        auto *response =
+            reinterpret_cast<const RecoveryResponse *>(payload.data());
+        m_logger->info("Recovery Response - Status: {}",
+                       static_cast<int>(response->request_status));
+      }
+      break;
+    }
+    case 'N':
+    case 'M':
+    case 'X': {
+      if (payload.size() >= sizeof(OrderMessage) - sizeof(StreamHeader)) {
+        auto *order = reinterpret_cast<const OrderMessage *>(payload.data());
+        m_logger->info(
+            "Order Message - Type: {}, Token: {}, Price: {}, Qty: {}", msgType,
+            order->token, order->price, order->quantity);
+      }
+      break;
+    }
+    default:
+      m_logger->warn("Unknown message type received: {}", msgType);
+    }
+  }
+  int m_socket = -1;
+  RecoveryConfig m_config;
+  std::shared_ptr<spdlog::logger> m_logger;
+};
+
+} // namespace recovery
+
+#include <iostream>
+
+int main() {
+  recovery::TbtRecoveryClient client;
+
+  if (!client.initialize()) {
+    std::cerr << "Failed to initialize client" << std::endl;
+    return 1;
+  }
+
+  // Fixed configuration for FO segment, stream 14, sequence 1000-2000
+  recovery::TbtRecoveryClient::RecoveryRequest request{
+      14,        // stream_id
+      128528125, // start_seq
+      129172047  // end_seq
+  };
+
+  auto result = client.performRecovery(request);
+
+  if (!result.success) {
+    std::cerr << "Recovery failed: " << result.error_message << std::endl;
+    return 1;
+  }
+
+  std::cout << "Recovery successful. Recovered " << result.packets_recovered
+            << " packets." << std::endl;
+  return 0;
+}

@@ -12,6 +12,7 @@ IGNORED_PATTERNS: List[str] = [
     ".git/",
     ".cache/",
     ".ccls/",
+    ".ccls-cache/",
     "build/",
     ".vscode/",
     ".session/",

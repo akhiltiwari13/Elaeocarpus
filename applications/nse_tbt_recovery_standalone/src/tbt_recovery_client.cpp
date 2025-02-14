@@ -268,18 +268,22 @@ bool TbtRecoveryClient::processRecovery() {
     // Convert from network to host endianness
     // fixEndianness(hdr); not needed as the data packet is Little Endian.
 
+    //construct payload
+    std::vector<uint8_t> payload(hdr.msg_len);
+
     // (2) Handling Control Message ('Y')
-    /*if (payload[0] == static_cast<uint8_t>(MessageType::Recovery)) {
+    if(payload[0] == static_cast<uint8_t>(MessageType::Recovery)) {
+
+      m_logger->hexdump(payload.data(),payload.size(), "");
       auto *recoveryResp = reinterpret_cast<const RecoveryResponse *>(payload.data());
       if (recoveryResp->req_status != 0) { // Assuming '0' means success
         m_logger->error("Recovery request failed with status {}", recoveryResp->req_status);
         return false;
       }
       m_logger->info("TBT Recovery Response Success");
-    }*/
+    }
 
     // (3) Read and Process TBT Data
-    std::vector<uint8_t> payload(hdr.msg_len);
     size_t total_bytes_read = 0;
     while (total_bytes_read < hdr.msg_len) {
       ssize_t ret = m_connection->recv_full(payload.data() + total_bytes_read,

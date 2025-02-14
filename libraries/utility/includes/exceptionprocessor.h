@@ -19,12 +19,12 @@ enum class ExceptionSeverity {
 
 // Exception details structure
 struct ExceptionDetails {
-    std::string_view category;
+    std::string_view category{""};
     int value{};
-    std::string message;
-    std::string_view defaultCategory;
+    std::string message{""};
+    std::string_view defaultCategory{""};
     int defaultValue{};
-    std::string defaultMessage;
+    std::string defaultMessage{""};
     ExceptionSeverity severity{ExceptionSeverity::Error};
 };
 

@@ -52,34 +52,6 @@ struct RecoveryResponse{
 
 #pragma pack(pop)
 
-// endianness helper fucntions:
-
-// Convert 64-bit from network (big-endian) to host
-inline uint64_t ntohll(uint64_t be_val)
-{
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    // On a big-endian system, no swap needed
-    return be_val;
-#else
-    // On little-endian, swap 8 bytes
-    uint64_t hi = static_cast<uint64_t>(ntohl(static_cast<uint32_t>(be_val & 0xFFFFFFFFULL))) << 32;
-    uint64_t lo = ntohl(static_cast<uint32_t>(be_val >> 32));
-    return hi | lo;
-#endif
-}
-
-// Convert double in big-endian to host double (assuming IEEE 754)
-inline double ntohd(double be_double)
-{
-    union {
-        uint64_t i;
-        double   d;
-    } conv;
-    conv.d = be_double;       // copy bits in
-    conv.i = ntohll(conv.i);  // swap
-    return conv.d;            // read back as host double
-}
-
 class TbtRecoveryClient {
 public:
   explicit TbtRecoveryClient(const std::string& config_file);
@@ -115,7 +87,7 @@ private:
   class Logger;
   std::unique_ptr<Logger> m_logger;
 
-  //Track the end seq num.
+  // Track the end seq num.
   uint32_t m_end_seq;
 };
 
