@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(elaeocarpus VERSION 0.1 LANGUAGES CXX)
 
-message(status "***elaeocarpus' pre-build*** ${PROJECT_SOURCE_DIR}")
+message(status "***elaeocarpus' pre-build*** ${PROJECT_SOURCE_DIR}. building with cmake version: "${CMAKE_VERSION})
 
 if(UNIX)
   message(status "Building on Linux/Unix")

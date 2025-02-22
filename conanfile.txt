@@ -1,3 +1,4 @@
+
 [requires]
 # Core C++ libraries
 capnproto/1.0.0  # For serialization
@@ -6,10 +7,17 @@ asio/1.32.0      # For TCP and multicast connections (network I/O)
 libevent/2.1.12  # For event-driven architecture
 fmt/10.2.1       # For string formatting (used by spdlog)
 spdlog/1.14.0    # For binary and text logging
-folly/2024.08.12.00  # For fast in-memory queues and other utilities
 cpptoml/0.1.1    # For config file parsing (TOML format)
 yaml-cpp/0.8.0   # yaml config parsing
 gtest/1.13.0     # For unit testing (optional, but recommended)
+
+# causing issues
+# libsodium/1.0.18  # Use a newer version
+# folly/2024.08.12.00  # For fast in-memory queues and other utilities
+# quickfix/1.15.1     # For fixing common C++ issues (hypothetical library) // doesn't support ARM.
+
+[tool_requires]
+cmake/3.30.0
 
 [generators]
 CMakeDeps
@@ -18,34 +26,47 @@ CMakeToolchain
 [layout]
 cmake_layout
 
+
 [options]
 # Enable compiler optimizations and warnings
-*:shared=False
-*:fPIC=True
-# *:build_type=Release
-*:build_type=Debug
-*:compiler.cppstd=20
-*:compiler.libcxx=libstdc++11
+*:shared=False  # Build static libraries by default (True for shared libraries)
+*:fPIC=True     # Position Independent Code (required for shared libraries on some platforms)
+# *:build_type=Debug  # Debug mode (default for development)
+*:build_type=Debug    # Debug mode (default for development)
+# *:build_type=Release  # Release mode (optimized for production)
+*:compiler.cppstd=20  # Use C++20 standard (other options: 11, 14, 17, 23)
+*:compiler.libcxx=libc++  # Use libc++ for macOS (other options: libstdc++, libstdc++11)
 
 # Enable all warnings and treat them as errors
-*:compiler.warning_level=everything
-*:compiler.treat_warnings_as_errors=True
+*:compiler.warning_level=everything  # Enable all warnings (other options: none, basic, extra)
+*:compiler.treat_warnings_as_errors=True  # Treat warnings as errors (False to disable)
 
 # Enable strict style checks (if supported by the compiler)
-*:compiler.style_checks=strict
+*:compiler.style_checks=strict  # Enable strict style checks (other options: none, basic)
 
 # Enable link-time optimization (LTO) for better performance
-*:compiler.lto=True
+*:compiler.lto=True  # Enable LTO (False to disable)
 
 # Enable debug symbols even in release mode for better debugging
-*:compiler.debug=True
+*:compiler.debug=True  # Enable debug symbols (False to disable)
+
+# macOS-specific settings
+*:compiler.arch=armv8  # Target ARM architecture (other options: x86_64, x86)
+*:compiler.os=Macos    # Target macOS (other options: Linux, Windows)
 
 [imports]
 # Copy necessary shared libraries to the build directory
-bin, *.dll -> ./bin
-lib, *.so* -> ./lib
-lib, *.dylib* -> ./lib
+bin, *.dll -> ./bin  # Copy DLLs to ./bin (Windows)
+lib, *.so* -> ./lib  # Copy shared libraries to ./lib (Linux)
+lib, *.dylib* -> ./lib  # Copy dynamic libraries to ./lib (macOS)
 
-# [build_requires]
-# cmake/3.26.0  # Ensure a modern CMake version is used
-# cmake/3.22.0  # Ensure a modern CMake version is used
+
+
+
+
+
+
+
+
+
+
