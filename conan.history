@@ -1,0 +1,66 @@
+ 1561  conan install . --output-folder=build --build=missing --update\n
+ 1562  pacman -S conan
+ 1563  sudo pacman -S conan
+ 1564  pacman -S conan
+ 1565  sudo pacman -S conan
+ 1567  yay -S conan
+ 1575  conan install . --output-folder=build --build=missing\n
+ 1576  conan profile detect
+ 1578  conan install . --output-folder=build --build=missing\n
+ 1582  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+ 1584  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+ 1586  conan install . --output-folder=build --build=missing\n
+ 1588  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+ 1594  cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+ 1595  conan --version
+ 1596  conan install . --output-folder=build --build=missing
+ 1598  conan install . --output-folder=build --build=missing
+ 1599  ll build/ | grep -i conan
+ 1602  conan install . --output-folder=build --build=missing
+ 1604  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake
+ 1607  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake\n
+ 1608  conan profile detect\nconan install . --output-folder=build --build=missing --update\n
+ 1610  conan profile detect\nconan install . --output-folder=build --build=missing --update\n
+ 1611  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake
+ 1613  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake
+ 1616  ls build/generators/conan_toolchain.cmake\n
+ 1617  conan --version\n
+ 1619  conan install . --output-folder=build --build=missing\n
+ 1620  ls build/generators/conan_toolchain.cmake\n
+ 1621  conan search yaml-cpp
+ 1622  conan install yaml-cpp/0.8.0@ -b missing
+ 1625  conan install yaml-cpp/0.8.0@ -b missing
+ 1628  ag -i conan_toolchain
+ 1629  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/RELEASE/generators/conan_toolchain.cmake
+ 1630  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/RELEASE/generators/conan_toolchain.cmake:wa
+ 1631  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/RELEASE/generators/conan_toolchain.cmake
+ 1632  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake
+ 1635  conan install yaml-cpp/0.8.0@ -b missing .
+ 1647  conan install .. --output-folder=build --build=missing
+ 1648  yaml-cpp gtest::gtest)\nconanfile.txt: Generator 'CMakeToolchain' calling 'generate()'\nconanfile.txt: CMakeToolchain generated: conan_toolchain.cmake\nconanfile.txt: CMakeToolchain: Preset 'conan-release' added to CMakePresets.json.\n    (cmake>=3.23) cmake --preset conan-release\n    (cmake<3.23) cmake <path> -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=generators/conan_toolchain.cmake  -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release\nconanfile.txt: CMakeToolchain generated: /home/akhil/files/projects/Elaeocarpus/build/build/Release/generators/CMakePresets.json\nconanfile.txt: CMakeToolchain generated: /home/akhil/files/projects/Elaeocarpus/CMakeUserPresets.json\nconanfile.txt: Generating aggregated env files\nconanfile.txt: Generated aggregated env files: ['conanbuild.sh', 'conanrun.sh']\nInstall finished successfully\n➜  Elaeocarpus git:(master) ✗ ls build/generators/conan_toolchain.cmake\n\nls: cannot access 'build/generators/conan_toolchain.cmake': No such file or director
+ 1650  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake\n
+ 1652  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake\n
+ 1671  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake\n
+ 1679  conan install .. --output-folder=.
+ 1683  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+ 1684  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/Release/build/Release/generators/conan_toolchain.cmake\n
+ 1688  ll build/Release/generators | grep conan
+ 1690  cmake .. -DCMAKE_TOOLCHAIN_FILE=buil/build/Release/build/Release/generators/conan_toolchain.cmake\n
+ 1691  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/build/Release/generators/conan_toolchain.cmake\n
+ 1692  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake\n
+ 1693  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 1842  conan install .. --output-folder=.
+ 1845  conan install .. --output-folder=.
+ 1846  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 1857  conan install .. --output-folder=.
+ 1861  conan install .. --output-folder=.
+ 1862  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 1865  conan install .. --output-folder=.
+ 1866  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 1868  conan install .. --output-folder=.
+ 1871  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 2130  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 2472  conan install .. --output-folder=.
+ 2473  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ 2607  git add MulticastReceiver_mcx/ README.md applications/ codedump/ conanfile.txt design.md libraries/ tools/ applications/ tools/
+ 3086  cmake .. -DCMAKE_TOOLCHAIN_FILE=build/build/Release/generators/conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
