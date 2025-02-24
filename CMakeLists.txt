@@ -19,5 +19,5 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 add_subdirectory(libraries)
 add_subdirectory(applications)
+# add_subdirectory(playground) # for checking cpp features in the project.
 # add_subdirectory(scripts)
-add_subdirectory(playground) # for checking cpp features in the project.

@@ -27,3 +27,8 @@ venv/*
 
 # mac specific files
 .DS_Store
+
+# cmake related files
+CMakeUserPresets.json
+
+# build files
